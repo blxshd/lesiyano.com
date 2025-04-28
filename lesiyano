@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LESIYANO GENTS TAILORS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .language-switch {
+            transition: all 0.3s ease;
+        }
+        .language-switch:hover {
+            transform: scale(1.1);
+        }
+        .slide-in {
+            animation: slideIn 0.5s forwards;
+        }
+        .slide-out {
+            animation: slideOut 0.5s forwards;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .arabic-text {
+            direction: rtl;
+            text-align: right;
+            font-family: 'Arial', sans-serif;
+        }
+        .admin-panel {
+            background: rgba(0,0,0,0.8);
+        }
+        .pickup-item {
+            transition: all 0.3s ease;
+        }
+        .pickup-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Language Switch -->
+    <div class="fixed top-4 right-4 z-50 flex space-x-2">
+        <button id="englishBtn" class="language-switch bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none">
+            English
+        </button>
+        <button id="arabicBtn" class="language-switch bg-green-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-green-700 focus:outline-none">
+            العربية
+        </button>
+    </div>
+
+    <!-- Admin Access Button -->
+    <div class="fixed top-4 left-4 z-50">
+        <button id="adminBtn" class="bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-900 focus:outline-none">
+            <i class="fas fa-lock mr-2"></i>
+            <span class="english-text">Admin</span>
+            <span class="arabic-text hidden">المشرف</span>
+        </button>
+    </div>
+
+    <!-- Admin Panel (Hidden by default) -->
+    <div id="adminPanel" class="admin-panel fixed inset-0 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4 relative">
+            <button id="closeAdmin" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+            <h2 class="text-2xl font-bold mb-6 english-text">Admin Login</h2>
+            <h2 class="text-2xl font-bold mb-6 arabic-text hidden">تسجيل الدخول للمشرف</h2>
+            
+            <div class="mb-4">
+                <label class="block english-text">Password</label>
+                <label class="block arabic-text hidden">كلمة المرور</label>
+                <input type="password" id="adminPassword" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            
+            <button id="adminLoginBtn" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition english-text">
+                Login
+            </button>
+            <button id="adminLoginBtnAr" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition arabic-text hidden">
+                تسجيل الدخول
+            </button>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard (Hidden by default) -->
+    <div id="adminDashboard" class="fixed inset-0 z-50 bg-gray-100 hidden overflow-y-auto">
+        <div class="container mx-auto py-8 px-4">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold english-text">Admin Dashboard</h1>
+                <h1 class="text-3xl font-bold arabic-text hidden">لوحة التحكم</h1>
+                <button id="adminLogout" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 english-text">
+                    Logout
+                </button>
+                <button id="adminLogoutAr" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 arabic-text hidden">
+                    تسجيل الخروج
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h2 class="text-xl font-semibold mb-4 english-text">Add New Order</h2>
+                    <h2 class="text-xl font-semibold mb-4 arabic-text hidden">إضافة طلب جديد</h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block english-text">Customer Name</label>
+                            <label class="block arabic-text hidden">اسم العميل</label>
+                            <input type="text" id="customerName" class="w-full px-4 py-2 border rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block english-text">Phone Number (+965)</label>
+                            <label class="block arabic-text hidden">رقم الهاتف (+965)</label>
+                            <input type="text" id="customerPhone" class="w-full px-4 py-2 border rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block english-text">Register Number</label>
+                            <label class="block arabic-text hidden">رقم التسجيل</label>
+                            <input type="text" id="registerNumber" class="w-full px-4 py-2 border rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block english-text">Total Products</label>
+                            <label class="block arabic-text hidden">إجمالي المنتجات</label>
+                            <input type="number" id="totalProducts" class="w-full px-4 py-2 border rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block english-text">Ready Products</label>
+                            <label class="block arabic-text hidden">المنتجات الجاهزة</label>
+                            <input type="number" id="readyProducts" class="w-full px-4 py-2 border rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block english-text">Delivery Date</label>
+                            <label class="block arabic-text hidden">تاريخ التسليم</label>
+                            <input type="date" id="deliveryDate" class="w-full px-4 py-2 border rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block english-text">Total Amount (7,000 KWD per product)</label>
+                            <label class="block arabic-text hidden">المبلغ الإجمالي (7,000 دينار لكل منتج)</label>
+                            <input type="text" id="totalAmount" class="w-full px-4 py-2 border rounded-lg" readonly>
+                        </div>
+                        
+                        <button id="saveOrder" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 english-text">
+                            Save Order
+                        </button>
+                        <button id="saveOrderAr" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 arabic-text hidden">
+                            حفظ الطلب
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h2 class="text-xl font-semibold mb-4 english-text">Customer Pickups</h2>
+                    <h2 class="text-xl font-semibold mb-4 arabic-text hidden">استلام العملاء</h2>
+                    
+                    <div id="pickupList" class="space-y-3 max-h-96 overflow-y-auto">
+                        <!-- Pickup items will be added here dynamically -->
+                        <p class="text-gray-500 english-text">No pickups scheduled yet</p>
+                        <p class="text-gray-500 arabic-text hidden">لا يوجد استلام مجدول بعد</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h2 class="text-xl font-semibold mb-4 english-text">All Orders</h2>
+                <h2 class="text-xl font-semibold mb-4 arabic-text hidden">جميع الطلبات</h2>
+                
+                <div id="allOrders" class="space-y-4">
+                    <!-- Orders will be added here dynamically -->
+                    <p class="text-gray-500 english-text">No orders added yet</p>
+                    <p class="text-gray-500 arabic-text hidden">لا توجد طلبات مضافة بعد</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="min-h-screen">
+        <!-- Hero Section -->
+        <header class="relative bg-gradient-to-r from-blue-900 to-green-800 text-white py-20">
+            <div class="container mx-auto px-4 text-center">
+                <h1 class="text-5xl font-bold mb-4 english-text">LESIYANO GENTS TAILORS</h1>
+                <h1 class="text-5xl font-bold mb-4 arabic-text hidden">خياطة لسيانو للرجال</h1>
+                
+                <p class="text-xl mb-8 english-text">Premium Kuwaiti Dishdasha Tailoring</p>
+                <p class="text-xl mb-8 arabic-text hidden">خياطة دشداشة كويتية فاخرة</p>
+                
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="https://maps.app.goo.gl/1PWnJ8AFxuXg3oWA6" target="_blank" class="bg-white text-blue-900 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition flex items-center">
+                        <i class="fas fa-map-marker-alt mr-2"></i>
+                        <span class="english-text">Commercial St9, Block 5, Kuwait City</span>
+                        <span class="arabic-text hidden">شارع التجاري 9، بلوك 5، مدينة الكويت</span>
+                    </a>
+                    <a href="https://wa.me/96597983351" class="bg-green-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-600 transition flex items-center">
+                        <i class="fab fa-whatsapp mr-2"></i>
+                        <span>+965 97983351</span>
+                        <img src="https://flagcdn.com/w20/kw.png" alt="Kuwait Flag" class="ml-2 h-5">
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Order Tracking Section -->
+        <section class="py-16 bg-gray-100">
+            <div class="container mx-auto px-4">
+                <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-8">
+                        <h2 class="text-3xl font-bold mb-6 english-text">Track Your Order</h2>
+                        <h2 class="text-3xl font-bold mb-6 arabic-text hidden">تتبع طلبك</h2>
+                        
+                        <div class="mb-6">
+                            <label class="block mb-2 english-text">Enter your Kuwaiti phone number or register number</label>
+                            <label class="block mb-2 arabic-text hidden">أدخل رقم هاتفك الكويتي أو رقم التسجيل</label>
+                            <input type="text" id="trackingInput" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="+965 or Register Number">
+                        </div>
+                        
+                        <button id="trackOrderBtn" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition english-text">
+                            Track Order
+                        </button>
+                        <button id="trackOrderBtnAr" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition arabic-text hidden">
+                            تتبع الطلب
+                        </button>
+                    </div>
+                    
+                    <!-- Order Details (Hidden by default) -->
+                    <div id="orderDetails" class="hidden p-8 border-t">
+                        <h3 class="text-2xl font-semibold mb-4 english-text">Order Details</h3>
+                        <h3 class="text-2xl font-semibold mb-4 arabic-text hidden">تفاصيل الطلب</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <p class="text-gray-600 english-text">Customer Name</p>
+                                <p class="text-gray-600 arabic-text hidden">اسم العميل</p>
+                                <p id="detailName" class="text-lg font-medium">-</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600 english-text">Phone Number</p>
+                                <p class="text-gray-600 arabic-text hidden">رقم الهاتف</p>
+                                <p id="detailPhone" class="text-lg font-medium">-</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600 english-text">Register Number</p>
+                                <p class="text-gray-600 arabic-text hidden">رقم التسجيل</p>
+                                <p id="detailRegister" class="text-lg font-medium">-</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600 english-text">Delivery Date</p>
+                                <p class="text-gray-600 arabic-text hidden">تاريخ التسليم</p>
+                                <p id="detailDate" class="text-lg font-medium">-</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600 english-text">Total Products</p>
+                                <p class="text-gray-600 arabic-text hidden">إجمالي المنتجات</p>
+                                <p id="detailTotal" class="text-lg font-medium">-</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600 english-text">Ready Products</p>
+                                <p class="text-gray-600 arabic-text hidden">المنتجات الجاهزة</p>
+                                <p id="detailReady" class="text-lg font-medium">-</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600 english-text">Total Amount</p>
+                                <p class="text-gray-600 arabic-text hidden">المبلغ الإجمالي</p>
+                                <p id="detailAmount" class="text-lg font-medium">-</p>
+                            </div>
+                        </div>
+                        
+                        <button id="pickupBtn" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition hidden english-text">
+                            Pick Up In Store
+                        </button>
+                        <button id="pickupBtnAr" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition hidden arabic-text hidden">
+                            الاستلام من المتجر
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="py-16 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 mb-8 md:mb-0 md:pr-8 english-text">
+                        <h2 class="text-3xl font-bold mb-4">About Our Tailoring</h2>
+                        <p class="text-gray-700 mb-4">LESIYANO GENTS TAILORS specializes in crafting premium Kuwaiti dishdasha, the traditional attire for men in Kuwait. With years of experience, we combine traditional craftsmanship with modern tailoring techniques.</p>
+                        <p class="text-gray-700">Each dishdasha is meticulously tailored to ensure the perfect fit and highest quality, using only the finest fabrics available.</p>
+                    </div>
+                    <div class="md:w-1/2 mb-8 md:mb-0 md:pr-8 arabic-text hidden">
+                        <h2 class="text-3xl font-bold mb-4">عن خياطتنا</h2>
+                        <p class="text-gray-700 mb-4">تخصص خياطة لسيانو للرجال في صنع الدشداشة الكويتية الفاخرة، الزي التقليدي للرجال في الكويت. مع سنوات من الخبرة، نجمع بين الحرفية التقليدية وتقنيات الخياطة الحديثة.</p>
+                        <p class="text-gray-700">يتم خياطة كل دشداشة بدقة لضمان الملاءمة المثالية وأعلى جودة، باستخدام أفضل الأقمشة المتاحة فقط.</p>
+                    </div>
+                    <div class="md:w-1/2">
+                        <img src="https://images.unsplash.com/photo-1598033129183-c4f50c736f10?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1025&q=80" alt="Kuwaiti Dishdasha" class="rounded-lg shadow-lg w-full h-auto">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="py-16 bg-gray-100">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold mb-8 text-center english-text">Contact Us</h2>
+                <h2 class="text-3xl font-bold mb-8 text-center arabic-text hidden">اتصل بنا</h2>
+                
+                <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-8 rounded-xl shadow-md">
+                        <h3 class="text-xl font-semibold mb-4 english-text">Visit Our Shop</h3>
+                        <h3 class="text-xl font-semibold mb-4 arabic-text hidden">زيارة متجرنا</h3>
+                        
+                        <div class="flex items-start mb-4">
+                            <i class="fas fa-map-marker-alt text-blue-600 mt-1 mr-3"></i>
+                            <div>
+                                <p class="font-medium english-text">Commercial St9, Block 5</p>
+                                <p class="font-medium arabic-text hidden">شارع التجاري 9، بلوك 5</p>
+                                <p class="text-gray-600 english-text">Kuwait City, Kuwait</p>
+                                <p class="text-gray-600 arabic-text hidden">مدينة الكويت، الكويت</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start mb-4">
+                            <i class="fas fa-phone-alt text-blue-600 mt-1 mr-3"></i>
+                            <div>
+                                <p class="font-medium">+965 97983351</p>
+                                <div class="flex items-center mt-1">
+                                    <img src="https://flagcdn.com/w20/kw.png" alt="Kuwait Flag" class="mr-2 h-4">
+                                    <span class="text-gray-600 english-text">Kuwait</span>
+                                    <span class="text-gray-600 arabic-text hidden">الكويت</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <i class="fas fa-clock text-blue-600 mt-1 mr-3"></i>
+                            <div>
+                                <p class="font-medium english-text">Opening Hours</p>
+                                <p class="font-medium arabic-text hidden">ساعات العمل</p>
+                                <p class="text-gray-600 english-text">9:00 AM - 10:00 PM (Daily)</p>
+                                <p class="text-gray-600 arabic-text hidden">9:00 صباحًا - 10:00 مساءً (يوميًا)</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-8 rounded-xl shadow-md">
+                        <h3 class="text-xl font-semibold mb-4 english-text">Get Directions</h3>
+                        <h3 class="text-xl font-semibold mb-4 arabic-text hidden">الحصول على الاتجاهات</h3>
+                        
+                        <div class="aspect-w-16 aspect-h-9 mb-4">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3477.1234567890123!2d47.98765432109876!3d29.37654321098765!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjnCsDIyJzM1LjYiTiA0N8KwNTknMTMuNiJF!5e0!3m2!1sen!2skw!4v1234567890123!5m2!1sen!2skw" class="w-full h-64 rounded-lg" allowfullscreen="" loading="lazy"></iframe>
+                        </div>
+                        
+                        <a href="https://maps.app.goo.gl/1PWnJ8AFxuXg3oWA6" target="_blank" class="inline-flex items-center bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+                            <i class="fas fa-directions mr-2"></i>
+                            <span class="english-text">Open in Maps</span>
+                            <span class="arabic-text hidden">فتح في الخرائط</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h2 class="text-2xl font-bold english-text">LESIYANO GENTS TAILORS</h2>
+                    <h2 class="text-2xl font-bold arabic-text hidden">خياطة لسيانو للرجال</h2>
+                    <p class="text-gray-400 english-text">Premium Kuwaiti Dishdasha Tailoring</p>
+                    <p class="text-gray-400 arabic-text hidden">خياطة دشداشة كويتية فاخرة</p>
+                </div>
+                
+                <div class="flex space-x-4">
+                    <a href="https://wa.me/96597983351" class="bg-green-600 text-white p-3 rounded-full hover:bg-green-700 transition">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                    <a href="tel:+96597983351" class="bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700 transition">
+                        <i class="fas fa-phone-alt"></i>
+                    </a>
+                    <a href="https://maps.app.goo.gl/1PWnJ8AFxuXg3oWA6" target="_blank" class="bg-gray-700 text-white p-3 rounded-full hover:bg-gray-600 transition">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-6 pt-6 text-center text-gray-400">
+                <p class="english-text">&copy; 2023 LESIYANO GENTS TAILORS. All rights reserved.</p>
+                <p class="arabic-text hidden">&copy; 2023 خياطة لسيانو للرجال. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Pickup Confirmation Modal -->
+    <div id="pickupModal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-xl p-8 max-w-md mx-4 relative">
+            <button id="closePickupModal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+            
+            <div class="text-center">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-check-circle text-green-600 text-3xl"></i>
+                </div>
+                
+                <h3 class="text-2xl font-bold mb-2 english-text">Thank You!</h3>
+                <h3 class="text-2xl font-bold mb-2 arabic-text hidden">شكرًا لك!</h3>
+                
+                <p class="text-gray-600 mb-6 english-text">Your order is ready to be picked up anytime before 10:00 PM.</p>
+                <p class="text-gray-600 mb-6 arabic-text hidden">طلبك جاهز للاستلام في أي وقت قبل الساعة 10:00 مساءً.</p>
+                
+                <button id="okPickupBtn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition english-text">
+                    OK
+                </button>
+                <button id="okPickupBtnAr" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition arabic-text hidden">
+                    موافق
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Language Switching
+        const englishBtn = document.getElementById('englishBtn');
+        const arabicBtn = document.getElementById('arabicBtn');
+        const englishElements = document.querySelectorAll('.english-text');
+        const arabicElements = document.querySelectorAll('.arabic-text');
+
+        englishBtn.addEventListener('click', () => {
+            englishElements.forEach(el => el.classList.remove('hidden'));
+            arabicElements.forEach(el => el.classList.add('hidden'));
+            document.documentElement.dir = 'ltr';
+            document.documentElement.lang = 'en';
+        });
+
+        arabicBtn.addEventListener('click', () => {
+            englishElements.forEach(el => el.classList.add('hidden'));
+            arabicElements.forEach(el => el.classList.remove('hidden'));
+            document.documentElement.dir = 'rtl';
+            document.documentElement.lang = 'ar';
+        });
+
+        // Admin Panel
+        const adminBtn = document.getElementById('adminBtn');
+        const adminPanel = document.getElementById('adminPanel');
+        const closeAdmin = document.getElementById('closeAdmin');
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
+        const adminLoginBtnAr = document.getElementById('adminLoginBtnAr');
+        const adminDashboard = document.getElementById('adminDashboard');
+        const adminLogout = document.getElementById('adminLogout');
+        const adminLogoutAr = document.getElementById('adminLogoutAr');
+        const adminPassword = document.getElementById('adminPassword');
+
+        adminBtn.addEventListener('click', () => {
+            adminPanel.classList.remove('hidden');
+        });
+
+        closeAdmin.addEventListener('click', () => {
+            adminPanel.classList.add('hidden');
+        });
+
+        adminLoginBtn.addEventListener('click', () => {
+            if (adminPassword.value === 'saleem17173') {
+                adminPanel.classList.add('hidden');
+                adminDashboard.classList.remove('hidden');
+            } else {
+                alert('Incorrect password');
+            }
+        });
+
+        adminLoginBtnAr.addEventListener('click', () => {
+            if (adminPassword.value === 'saleem17173') {
+                adminPanel.classList.add('hidden');
+                adminDashboard.classList.remove('hidden');
+            } else {
+                alert('كلمة المرور غير صحيحة');
+            }
+        });
+
+        adminLogout.addEventListener('click', () => {
+            adminDashboard.classList.add('hidden');
+            adminPassword.value = '';
+        });
+
+        adminLogoutAr.addEventListener('click', () => {
+            adminDashboard.classList.add('hidden');
+            adminPassword.value = '';
+        });
+
+        // Order Tracking
+        const trackOrderBtn = document.getElementById('trackOrderBtn');
+        const trackOrderBtnAr = document.getElementById('trackOrderBtnAr');
+        const trackingInput = document.getElementById('trackingInput');
+        const orderDetails = document.getElementById('orderDetails');
+        const pickupBtn = document.getElementById('pickupBtn');
+        const pickupBtnAr = document.getElementById('pickupBtnAr');
+
+        // Sample data storage (in a real app, this would be a database)
+        let orders = [
+            {
+                name: "Ahmed Al-Sabah",
+                phone: "+96555512345",
+                register: "REG1001",
+                totalProducts: 3,
+                readyProducts: 2,
+                deliveryDate: "2023-12-15",
+                totalAmount: "21,000 KWD",
+                pickupRequested: false
+            },
+            {
+                name: "Mohammed Al-Farsi",
+                phone: "+96566678901",
+                register: "REG1002",
+                totalProducts: 1,
+                readyProducts: 0,
+                deliveryDate: "2023-12-20",
+                totalAmount: "7,000 KWD",
+                pickupRequested: false
+            }
+        ];
+
+        // Admin Dashboard Functions
+        const customerName = document.getElementById('customerName');
+        const customerPhone = document.getElementById('customerPhone');
+        const registerNumber = document.getElementById('registerNumber');
+        const totalProducts = document.getElementById('totalProducts');
+        const readyProducts = document.getElementById('readyProducts');
+        const deliveryDate = document.getElementById('deliveryDate');
+        const totalAmount = document.getElementById('totalAmount');
+        const saveOrder = document.getElementById('saveOrder');
+        const saveOrderAr = document.getElementById('saveOrderAr');
+        const pickupList = document.getElementById('pickupList');
+        const allOrders = document.getElementById('allOrders');
+
+        // Calculate total amount
+        totalProducts.addEventListener('input', () => {
+            if (totalProducts.value) {
+                const amount = parseInt(totalProducts.value) * 7000;
+                totalAmount.value = amount.toLocaleString() + ' KWD';
+            } else {
+                totalAmount.value = '';
+            }
+        });
+
+        // Save new order
+        saveOrder.addEventListener('click', () => {
+            if (!customerName.value || !customerPhone.value || !registerNumber.value || !totalProducts.value || !deliveryDate.value) {
+                alert('Please fill all required fields');
+                return;
+            }
+
+            const newOrder = {
+                name: customerName.value,
+                phone: customerPhone.value,
+                register: registerNumber.value,
+                totalProducts: parseInt(totalProducts.value),
+                readyProducts: readyProducts.value ? parseInt(readyProducts.value) : 0,
+                deliveryDate: deliveryDate.value,
+                totalAmount: (parseInt(totalProducts.value) * 7000).toLocaleString() + ' KWD',
+                pickupRequested: false
+            };
+
+            orders.push(newOrder);
+            renderAllOrders();
+            clearOrderForm();
+
+            alert('Order saved successfully');
+        });
+
+        saveOrderAr.addEventListener('click', () => {
+            if (!customerName.value || !customerPhone.value || !registerNumber.value || !totalProducts.value || !deliveryDate.value) {
+                alert('يرجى ملء جميع الحقول المطلوبة');
+                return;
+            }
+
+            const newOrder = {
+                name: customerName.value,
+                phone: customerPhone.value,
+                register: registerNumber.value,
+                totalProducts: parseInt(totalProducts.value),
+                readyProducts: readyProducts.value ? parseInt(readyProducts.value) : 0,
+                deliveryDate: deliveryDate.value,
+                totalAmount: (parseInt(totalProducts.value) * 7000).toLocaleString() + ' KWD',
+                pickupRequested: false
+            };
+
+            orders.push(newOrder);
+            renderAllOrders();
+            clearOrderForm();
+
+            alert('تم حفظ الطلب بنجاح');
+        });
+
+        function clearOrderForm() {
+            customerName.value = '';
+            customerPhone.value = '';
+            registerNumber.value = '';
+            totalProducts.value = '';
+            readyProducts.value = '';
+            deliveryDate.value = '';
+            totalAmount.value = '';
+        }
+
+        function renderAllOrders() {
+            allOrders.innerHTML = '';
+            
+            if (orders.length === 0) {
+                const noOrdersEn = document.createElement('p');
+                noOrdersEn.className = 'text-gray-500 english-text';
+                noOrdersEn.textContent = 'No orders added yet';
+                
+                const noOrdersAr = document.createElement('p');
+                noOrdersAr.className = 'text-gray-500 arabic-text hidden';
+                noOrdersAr.textContent = 'لا توجد طلبات مضافة بعد';
+                
+                allOrders.appendChild(noOrdersEn);
+                allOrders.appendChild(noOrdersAr);
+                return;
+            }
+            
+            orders.forEach((order, index) => {
+                const orderItem = document.createElement('div');
+                orderItem.className = 'bg-gray-50 p-4 rounded-lg mb-4';
+                
+                orderItem.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+                        <div>
+                            <p class="text-gray-600 english-text">Customer</p>
+                            <p class="text-gray-600 arabic-text hidden">العميل</p>
+                            <p class="font-medium">${order.name}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600 english-text">Phone</p>
+                            <p class="text-gray-600 arabic-text hidden">الهاتف</p>
+                            <p class="font-medium">${order.phone}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600 english-text">Register No.</p>
+                            <p class="text-gray-600 arabic-text hidden">رقم التسجيل</p>
+                            <p class="font-medium">${order.register}</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <p class="text-gray-600 english-text">Total</p>
+                            <p class="text-gray-600 arabic-text hidden">الإجمالي</p>
+                            <p class="font-medium">${order.totalProducts}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600 english-text">Ready</p>
+                            <p class="text-gray-600 arabic-text hidden">جاهز</p>
+                            <p class="font-medium">${order.readyProducts}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600 english-text">Delivery</p>
+                            <p class="text-gray-600 arabic-text hidden">التسليم</p>
+                            <p class="font-medium">${formatDate(order.deliveryDate)}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-600 english-text">Amount</p>
+                            <p class="text-gray-600 arabic-text hidden">المبلغ</p>
+                            <p class="font-medium">${order.totalAmount}</p>
+                        </div>
+                    </div>
+                    <div class="mt-3 flex justify-between items-center">
+                        <span class="text-sm ${order.pickupRequested ? 'text-green-600' : 'text-gray-500'} english-text">
+                            ${order.pickupRequested ? 'Pickup requested' : 'No pickup requested'}
+                        </span>
+                        <span class="text-sm ${order.pickupRequested ? 'text-green-600' : 'text-gray-500'} arabic-text hidden">
+                            ${order.pickupRequested ? 'تم طلب الاستلام' : 'لا يوجد طلب استلام'}
+                        </span>
+                        <button class="text-red-500 hover:text-red-700 english-text delete-order" data-index="${index}">
+                            <i class="fas fa-trash mr-1"></i> Delete
+                        </button>
+                        <button class="text-red-500 hover:text-red-700 arabic-text hidden delete-order" data-index="${index}">
+                            <i class="fas fa-trash mr-1"></i> حذف
+                        </button>
+                    </div>
+                `;
+                
+                allOrders.appendChild(orderItem);
+            });
+            
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.delete-order').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = this.getAttribute('data-index');
+                    orders.splice(index, 1);
+                    renderAllOrders();
+                    renderPickupList();
+                });
+            });
+        }
+
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
+
+        function renderPickupList() {
+            pickupList.innerHTML = '';
+            
+            const pickupOrders = orders.filter(order => order.pickupRequested);
+            
+            if (pickupOrders.length === 0) {
+                const noPickupsEn = document.createElement('p');
+                noPickupsEn.className = 'text-gray-500 english-text';
+                noPickupsEn.textContent = 'No pickups scheduled yet';
+                
+                const noPickupsAr = document.createElement('p');
+                noPickupsAr.className = 'text-gray-500 arabic-text hidden';
+                noPickupsAr.textContent = 'لا يوجد استلام مجدول بعد';
+                
+                pickupList.appendChild(noPickupsEn);
+                pickupList.appendChild(noPickupsAr);
+                return;
+            }
+            
+            pickupOrders.forEach(order => {
+                const pickupItem = document.createElement('div');
+                pickupItem.className = 'bg-white p-4 rounded-lg shadow pickup-item mb-3';
+                
+                pickupItem.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="font-medium">${order.name}</p>
+                            <p class="text-sm text-gray-600">${order.phone}</p>
+                            <p class="text-sm text-gray-600 english-text">Register: ${order.register}</p>
+                            <p class="text-sm text-gray-600 arabic-text hidden">التسجيل: ${order.register}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm english-text">Ready: ${order.readyProducts}/${order.totalProducts}</p>
+                            <p class="text-sm arabic-text hidden">جاهز: ${order.readyProducts}/${order.totalProducts}</p>
+                            <p class="text-sm english-text">Pickup by: ${formatDate(order.deliveryDate)}</p>
+                            <p class="text-sm arabic-text hidden">الاستلام بحلول: ${formatDate(order.deliveryDate)}</p>
+                        </div>
+                    </div>
+                `;
+                
+                pickupList.appendChild(pickupItem);
+            });
+        }
+
+        // Track Order
+        trackOrderBtn.addEventListener('click', trackOrder);
+        trackOrderBtnAr.addEventListener('click', trackOrder);
+
+        function trackOrder() {
+            const input = trackingInput.value.trim();
+            
+            if (!input) {
+                if (document.documentElement.lang === 'en') {
+                    alert('Please enter your phone number or register number');
+                } else {
+                    alert('يرجى إدخال رقم الهاتف أو رقم التسجيل');
+                }
+                return;
+            }
+            
+            // Find order by phone or register number
+            const order = orders.find(o => 
+                o.phone.includes(input) || o.register.toLowerCase() === input.toLowerCase()
+            );
+            
+            if (order) {
+                // Display order details
+                document.getElementById('detailName').textContent = order.name;
+                document.getElementById('detailPhone').textContent = order.phone;
+                document.getElementById('detailRegister').textContent = order.register;
+                document.getElementById('detailDate').textContent = formatDate(order.deliveryDate);
+                document.getElementById('detailTotal').textContent = order.totalProducts;
+                document.getElementById('detailReady').textContent = order.readyProducts;
+                document.getElementById('detailAmount').textContent = order.totalAmount;
+                
+                // Show pickup button if delivery date is today
+                const today = new Date().toISOString().split('T')[0];
+                if (order.deliveryDate === today && !order.pickupRequested) {
+                    pickupBtn.classList.remove('hidden');
+                    pickupBtnAr.classList.remove('hidden');
+                } else {
+                    pickupBtn.classList.add('hidden');
+                    pickupBtnAr.classList.add('hidden');
+                }
+                
+                orderDetails.classList.remove('hidden');
+            } else {
+                if (document.documentElement.lang === 'en') {
+                    alert('No order found with that phone or register number');
+                } else {
+                    alert('لا يوجد طلب بهذا رقم الهاتف أو رقم التسجيل');
+                }
+            }
+        }
+
+        // Pickup Button
+        pickupBtn.addEventListener('click', requestPickup);
+        pickupBtnAr.addEventListener('click', requestPickup);
+
+        function requestPickup() {
+            const input = trackingInput.value.trim();
+            const orderIndex = orders.findIndex(o => 
+                o.phone.includes(input) || o.register.toLowerCase() === input.toLowerCase()
+            );
+            
+            if (orderIndex !== -1) {
+                orders[orderIndex].pickupRequested = true;
+                
+                // Show confirmation modal
+                const pickupModal = document.getElementById('pickupModal');
+                pickupModal.classList.remove('hidden');
+                
+                // Update admin views
+                renderAllOrders();
+                renderPickupList();
+            }
+        }
+
+        // Pickup Modal
+        const pickupModal = document.getElementById('pickupModal');
+        const closePickupModal = document.getElementById('closePickupModal');
+        const okPickupBtn = document.getElementById('okPickupBtn');
+        const okPickupBtnAr = document.getElementById('okPickupBtnAr');
+
+        closePickupModal.addEventListener('click', () => {
+            pickupModal.classList.add('hidden');
+        });
+
+        okPickupBtn.addEventListener('click', () => {
+            pickupModal.classList.add('hidden');
+            orderDetails.classList.add('hidden');
+            trackingInput.value = '';
+        });
+
+        okPickupBtnAr.addEventListener('click', () => {
+            pickupModal.classList.add('hidden');
+            orderDetails.classList.add('hidden');
+            trackingInput.value = '';
+        });
+
+        // Initialize
+        renderAllOrders();
+        renderPickupList();
+    </script>
+</body>
+</html>
